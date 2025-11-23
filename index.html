@@ -1,26 +1,240 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>ボイス当てクイズ Ultra</title>
 
-    <meta property="og:title" content="Replit Design" />
-    <meta property="og:description" content="A website made with Replit Design" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://replit.com/public/images/opengraph.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@replit" />
-    <meta name="twitter:title" content="Replit Design" />
-    <meta name="twitter:description" content="A website made with Replit Design" />
-    <meta name="twitter:image" content="https://replit.com/public/images/opengraph.png" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #111;
+      color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    h1 {
+      margin-top: 10px;
+      margin-bottom: 5px;
+      font-size: 1.8rem;
+      text-align: center;
+    }
+    .sub {
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .game-container {
+      width: 100%;
+      max-width: 600px;
+      background: #1e1e1e;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      box-sizing: border-box;
+    }
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .score {
+      font-size: 0.95rem;
+      color: #ddd;
+    }
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 0.95rem;
+      margin: 4px;
+      background: #333;
+      color: #f5f5f5;
+      transition: transform 0.05s ease, box-shadow 0.1s ease, background 0.1s;
+    }
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+      background: #444;
+    }
+    button:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+    button.primary {
+      background: #0078ff;
+    }
+    button.primary:hover {
+      background: #1188ff;
+    }
+    button.secondary {
+      background: #555;
+    }
+    .choices {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .choice-btn.correct {
+      background: #0c8d3b;
+    }
+    .choice-btn.wrong {
+      background: #a52525;
+    }
+    .status {
+      min-height: 40px;
+      margin-top: 10px;
+      font-size: 0.95rem;
+      text-align: center;
+      white-space: pre-line;
+    }
+    .status.correct {
+      color: #6be372;
+    }
+    .status.wrong {
+      color: #ff8c8c;
+    }
+    .audio-hint {
+      font-size: 0.8rem;
+      color: #888;
+      text-align: center;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>ボイス当てクイズ Ultra</h1>
+  <div class="sub">音を聞いてセリフを当ててね 🔊</div>
 
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fira+Code:wght@300..700&family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@100..900&family=Oxanium:wght@200..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+  <div class="game-container">
+    <div class="top-row">
+      <div class="score">
+        スコア: <span id="score">0</span> / <span id="total">0</span>
+      </div>
+      <div>
+        <button id="playBtn" class="primary">▶ もう一度再生</button>
+        <button id="nextBtn" class="secondary">次の問題 ▶</button>
+      </div>
+    </div>
+
+    <div class="audio-hint">※ 音量注意</div>
+
+    <div class="choices" id="choices"></div>
+
+    <div id="status" class="status"></div>
+  </div>
+
+  <script>
+    // GitHub の public/audio フォルダ内のファイル名に合わせて並べる
+    const voices = [
+      { id: 1, label: "出ていけ",             file: "public/audio/出ていけ.wav" },
+      { id: 2, label: "仕方ないね",           file: "public/audio/仕方ないね.wav" },
+      { id: 3, label: "最近だらしねえ",       file: "public/audio/最近だらしねえ.wav" },
+      { id: 4, label: "ホイホイチャーハン①",  file: "public/audio/ホイホイチャーハン (1).wav" },
+      { id: 5, label: "ホイホイチャーハン②",  file: "public/audio/ホイホイチャーハン (2).wav" },
+      { id: 6, label: "あんかけチャーハン",   file: "public/audio/あんかけチャーハン.wav" },
+      { id: 7, label: "アー！",               file: "public/audio/アー！ (1).wav" },
+      { id: 8, label: "あ？最近だらしねえな", file: "public/audio/あ？最近だらしねえな (2).wav" },
+      { id: 9, label: "NO",                   file: "public/audio/NO.wav" }
+    ];
+
+    let current = null;
+    let audio = null;
+    let score = 0;
+    let total = 0;
+    let answered = false;
+
+    const scoreEl   = document.getElementById("score");
+    const totalEl   = document.getElementById("total");
+    const statusEl  = document.getElementById("status");
+    const choicesEl = document.getElementById("choices");
+    const playBtn   = document.getElementById("playBtn");
+    const nextBtn   = document.getElementById("nextBtn");
+
+    function shuffle(array) {
+      const arr = array.slice();
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function playCurrentAudio() {
+      if (!current) return;
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+      audio = new Audio(current.file);
+      audio.play().catch(e => {
+        console.warn("再生に失敗:", e);
+        statusEl.textContent = "音声の再生に失敗しました（パスかファイル名を確認）";
+      });
+    }
+
+    function newQuestion() {
+      answered = false;
+      statusEl.textContent = "";
+      statusEl.className = "status";
+
+      const idx = Math.floor(Math.random() * voices.length);
+      current = voices[idx];
+
+      const shuffled = shuffle(voices);
+      choicesEl.innerHTML = "";
+      shuffled.forEach(v => {
+        const btn = document.createElement("button");
+        btn.textContent = v.label;
+        btn.classList.add("choice-btn");
+        btn.addEventListener("click", () => handleAnswer(v, btn));
+        choicesEl.appendChild(btn);
+      });
+
+      total++;
+      totalEl.textContent = total.toString();
+      playCurrentAudio();
+    }
+
+    function handleAnswer(chosen, btnEl) {
+      if (answered) return;
+      answered = true;
+
+      const buttons = Array.from(document.querySelectorAll(".choice-btn"));
+      buttons.forEach(b => b.disabled = true);
+
+      if (chosen.id === current.id) {
+        score++;
+        scoreEl.textContent = score.toString();
+        statusEl.textContent = "正解！\n次の問題へ行くか、もう一度再生してもOK。";
+        statusEl.className = "status correct";
+        btnEl.classList.add("correct");
+      } else {
+        statusEl.textContent = `不正解…\n正解は「${current.label}」でした。`;
+        statusEl.className = "status wrong";
+        btnEl.classList.add("wrong");
+        buttons.forEach(b => {
+          if (b.textContent === current.label) {
+            b.classList.add("correct");
+          }
+        });
+      }
+    }
+
+    playBtn.addEventListener("click", playCurrentAudio);
+    nextBtn.addEventListener("click", newQuestion);
+
+    window.addEventListener("load", newQuestion);
+  </script>
+</body>
 </html>
